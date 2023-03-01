@@ -21,9 +21,15 @@
     <ClCompile Include="Cplex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RungeKutta.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cplex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RungeKutta.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

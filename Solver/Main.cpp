@@ -14,7 +14,6 @@ int main()
 	//RungeKutta::rk4(f, -5, 5, -63.5, 0.25);
 	//cout << "\n\nButcher Tablau:\n\n";
 
-	//// TODO: Eulers method has large error when using Butcher table
 	//ButcherTable Euler{ {0},{{0}},{1} };
 	//ButcherTable Heun{ {0,1},{{0,0},{1,0}},{1 /(double)2, 1 /(double)2} };
 	//ButcherTable RK4{

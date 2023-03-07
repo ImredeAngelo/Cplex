@@ -36,16 +36,17 @@ void Cplex::solveLP()
 	cout << "N: " << n << "\n";
 
 	try {
-		IloNumVarArray x(env, 2*n, 0.0, 1.0);
+		IloNumVarArray u(env, n, 0.0, 1.0);
+		IloNumVarArray y(env, n, 0.0, 5.0);
 
-		model.add(IloMinimize(env, x[0]*x[0]/2 + x[1]*x[1]/2 + x[2]*x[2]/2 + x[2*n - 1]));
+		model.add(IloMinimize(env, y[0]*y[0]/2 + y[1]*y[1]/2 + y[2]*y[2]/2 + u[n - 1]));
 
 		// Initial condition y(0) = 1
-		model.add(x[0] == 1);
+		model.add(y[0] == 1);
 
 		// Constraint on each point u_i (Eulers method)
 		for (auto t = t0; t < t1; t += dt, i++) {
-			model.add(x[i + 1] == x[i] + dt * (Fo + Fy * x[i] + Fu * x[n + i]));
+			model.add(y[i + 1] == y[i] + dt * (Fo + Fy * y[i] + Fu * u[i]));
 		}
 
 		IloCplex cplex(model);
@@ -56,11 +57,11 @@ void Cplex::solveLP()
 
 		cout << "\nObjective: " << setw(2);
 		for (int i = 0; i < n; i++) {
-			cout << cplex.getValue(x[i]) << ", " << setw(5);
+			cout << cplex.getValue(y[i]) << ", " << setw(5);
 		}
 		cout << "\nControl: " << setw(4);
 		for (int i = 0; i < n; i++) {
-			cout << cplex.getValue(x[i + n]) << ", " << setw(5);
+			cout << cplex.getValue(u[i]) << ", " << setw(5);
 		}
 
 		cout << endl;
@@ -74,15 +75,3 @@ void Cplex::solveLP()
 
 	env.end();
 }
-
-//// Set up system to be solved
-//IloNumVar u(env, 0.0, 1.0, ILOFLOAT);	// Control
-//IloNumVar y(env);						// Dynamics
-//// IloNumLinExprTerm dy = -u;			// Dynamics PDE -> RK to get constraints on y
-
-//model.add(IloMinimize(env, y * y / 2));
-
-//IloRange c1(y >= 0);
-//model.add(c1);
-
-// solve

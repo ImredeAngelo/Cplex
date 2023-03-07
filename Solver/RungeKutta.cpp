@@ -119,7 +119,7 @@ void RungeKutta::expl(ButcherTable butcher, double (*f)(double, double), const d
 #endif
 }
 
-void RungeKutta::discretize(double (*f)(double, double), const double& t0, const double& t1, const double y0, const double h)
+void RungeKutta::discretize(IloModel model, IloNumVarArray& u, IloNumVarArray& y, ButcherTable butcher)
 {
-
+	
 }

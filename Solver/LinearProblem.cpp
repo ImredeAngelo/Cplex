@@ -1,7 +1,7 @@
 #include "LinearProblem.h"
 
-LinearProblem::LinearProblem(uint32_t steps, double t_end, double lb, double ub)
-	: n(steps), t_end(t_end), model(env), u(env, n, lb, ub), y(env, n, DBL_MIN, DBL_MAX)
+LinearProblem::LinearProblem(uint32_t steps, double t_end, double ulb, double uub, double ylb, double yub)
+	: n(steps), t_end(t_end), model(env), u(env, n, ulb, uub), y(env, n, ylb, yub)
 {
 	// TODO - Objective function as argument?
 	// Objective = Integral of y
@@ -14,12 +14,12 @@ LinearProblem::LinearProblem(uint32_t steps, double t_end, double lb, double ub)
 }
 
 // TODO: Butcher table
-void LinearProblem::parameterize(double(*a)(double), double(*b)(double))
+void LinearProblem::parameterize(double(*a)(double), double(*b)(double), double (*c)(double))
 {
 	const auto dt = t_end/n;
 	for(auto i = 0; i < n - 1; i++) {
 		auto t = i * dt;
-		model.add(y[i + 1] == y[i] + dt * (a(t) * u[i] + b(t) * y[i]));
+		model.add(y[i + 1] == y[i] + dt * (a(t) * u[i] + b(t) * y[i] + c(t)));
 	}
 }
 
@@ -38,6 +38,21 @@ void LinearProblem::solve()
 	{
 		std::cerr << "An unknown error occured.";
 	}
+}
+
+IloNumVarArray LinearProblem::getControl()
+{
+	return u;
+}
+
+IloNumVarArray LinearProblem::getConstraint()
+{
+	return y;
+}
+
+void LinearProblem::addConstraint(IloExtractable constraint)
+{
+	model.add(constraint);
 }
 
 std::ostream& operator<<(std::ostream& os, const LinearProblem& lp)

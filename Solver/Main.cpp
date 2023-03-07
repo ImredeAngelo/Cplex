@@ -15,13 +15,14 @@ int main()
 
 	//Cplex::solveLP();
 
-	auto Fc = [](double t) { return 0.0; };
-	auto Fy = [](double t) { return 0.4; };
-	auto Fu = [](double t) { return -1.0; };
+	auto Fc = [](double t) { return .1*t; };
+	auto Fy = [](double t) { return 0.0; };
+	auto Fu = [](double t) { return -.5; };
+
 	// auto u = Solve::linear(Fc, Fy, Fu, 0, 2.1, 0.01);
 
-	LinearProblem lin(40, 4, 0.0, 1.0);
-	lin.parameterize(Fu, Fy);
+	LinearProblem lin(100, 6, 0, 1, -1.0);
+	lin.parameterize(Fu, Fy, Fc);
 	lin.solve();
 
 	std::cout << "\n\nObjective:\n" << lin;
